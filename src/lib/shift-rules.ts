@@ -39,24 +39,27 @@ export interface CheckResult {
 }
 
 export function evaluate(i: CheckInput): CheckResult {
+  const checkCert = i.scenario !== "retail";
+  const checkOt = i.scenario !== "clinic";
   const errors: string[] = [];
   const ex = i.existingHours.trim() === "" ? NaN : Number(i.existingHours);
   const pr = i.proposedHours.trim() === "" ? NaN : Number(i.proposedHours);
-  if (Number.isNaN(ex)) errors.push("Enter existing scheduled hours this week.");
-  else if (ex < 0 || ex > 168) errors.push("Existing hours must be between 0 and 168.");
-  if (Number.isNaN(pr)) errors.push("Enter proposed shift hours.");
-  else if (pr <= 0 || pr > 24) errors.push("Proposed shift must be more than 0 and at most 24 hours.");
-  if (!errors.length && ex + pr > 168) errors.push("Projected hours cannot exceed 168 in a week.");
-
-  const checkCert = i.scenario !== "retail";
-  const checkOt = i.scenario !== "clinic";
+  if (checkOt) {
+    if (!Number.isFinite(ex)) errors.push("Enter existing scheduled hours this week.");
+    else if (ex < 0 || ex > 168) errors.push("Existing hours must be between 0 and 168.");
+    if (!Number.isFinite(pr)) errors.push("Enter proposed shift hours.");
+    else if (pr <= 0 || pr > 24) errors.push("Proposed shift must be more than 0 and at most 24 hours.");
+    if (!errors.length && ex + pr > 168) errors.push("Projected hours cannot exceed 168 in a week.");
+  }
 
   if (errors.length) {
     return { status: "invalid", projected: null, rule: "—", explanation: "Fix the inputs to run the checks.", action: "Correct the highlighted fields.", errors };
   }
-  const projected = ex + pr;
+  const projected = Number.isFinite(ex) && Number.isFinite(pr) && ex >= 0 && pr > 0 && pr <= 24 && ex + pr <= 168
+    ? ex + pr
+    : null;
   const certExpired = checkCert && i.requiresCert && i.certStatus === "expired";
-  const overLimit = checkOt && projected > OVERTIME_LIMIT;
+  const overLimit = checkOt && projected !== null && projected > OVERTIME_LIMIT;
 
   if (certExpired) {
     return {
