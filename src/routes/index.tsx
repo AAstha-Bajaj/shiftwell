@@ -34,7 +34,7 @@ const label = "text-sm font-medium text-foreground";
 
 function Index() {
   const [scenario, setScenario] = useState<Scenario>("combined");
-  const [empId, setEmpId] = useState(EMPLOYEES[0].id);
+  const [empId, setEmpId] = useState(EMPLOYEES[0]!.id);
   const emp = EMPLOYEES.find((e) => e.id === empId)!;
   const [certStatus, setCertStatus] = useState<CertStatus>(emp.certStatus);
   const [expiry, setExpiry] = useState(emp.expiry ?? "");
