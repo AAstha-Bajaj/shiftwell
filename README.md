@@ -3,9 +3,6 @@
 
 **Prevent scheduling risks before a shift is assigned.**
 
-[![Live Demo](https://shiftwell-seven.vercel.app/)
-[![Status](https://img.shields.io/badge/Status-Prototype-orange?style=for-the-badge)](https://github.com/AAstha-Bajaj/shiftwell)
-
 Shiftwell Shift Guard is a lightweight workforce scheduling prototype designed to help businesses identify potential compliance and overtime issues before assigning shifts. It demonstrates how simple, rule-based validation can make scheduling decisions clearer, more consistent, and easier to review.
 
 The prototype focuses on two practical scenarios: **healthcare certificate compliance** and **retail overtime approvals**.
